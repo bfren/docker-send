@@ -1,0 +1,105 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v3
+      -
+        name: Get repository name
+        run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+        shell: bash
+      -
+        name: Read Send version - major
+        uses: bfren/read-file@v1
+        with:
+          file: ./overlay/tmp/SEND_MAJOR
+        id: send_major
+      -
+        name: Read Send version - minor
+        uses: bfren/read-file@v1
+        with:
+          file: ./overlay/tmp/SEND_MINOR
+        id: send_minor
+      -
+        name: Read Send version - revision
+        uses: bfren/read-file@v1
+        with:
+          file: ./overlay/tmp/SEND_REVISION
+        id: send_revision
+      -
+        name: Read image version
+        uses: bfren/read-file@v1
+        with:
+          file: ./VERSION_MAJOR
+        id: version_major
+      -
+        name: Read image version
+        uses: bfren/read-file@v1
+        with:
+          file: ./VERSION_MINOR
+        id: version_minor
+      -
+        name: Read image version
+        uses: bfren/read-file@v1
+        with:
+          file: ./VERSION
+        id: version
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          build-args: |
+            BF_IMAGE=${{ env.REPOSITORY_NAME }}
+            BF_VERSION=${{ steps.version.outputs.contents }}
+          push: true
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          tags: |
+            bfren/send:latest
+            bfren/send:${{ steps.version_major.outputs.contents }}
+            bfren/send:${{ steps.version_minor.outputs.contents }}
+            bfren/send:${{ steps.version.outputs.contents }}
+            bfren/send:send${{ steps.send_major.outputs.contents }}
+            bfren/send:send${{ steps.send_major.outputs.contents }}-${{ steps.version.outputs.contents }}
+            bfren/send:send${{ steps.send_minor.outputs.contents }}
+            bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}
+            bfren/send:send${{ steps.send_revision.outputs.contents }}
+            ghcr.io/bfren/send:latest
+            ghcr.io/bfren/send:${{ steps.version_major.outputs.contents }}
+            ghcr.io/bfren/send:${{ steps.version_minor.outputs.contents }}
+            ghcr.io/bfren/send:${{ steps.version.outputs.contents }}
+            ghcr.io/bfren/send:send${{ steps.send_major.outputs.contents }}
+            ghcr.io/bfren/send:send${{ steps.send_major.outputs.contents }}-${{ steps.version.outputs.contents }}
+            ghcr.io/bfren/send:send${{ steps.send_minor.outputs.contents }}
+            ghcr.io/bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}
+            ghcr.io/bfren/send:send${{ steps.send_revision.outputs.contents }}
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}

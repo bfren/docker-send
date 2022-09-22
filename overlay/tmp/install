@@ -1,0 +1,78 @@
+#!/bin/sh
+
+set -euo pipefail
+export BF_E=`basename ${0}`
+
+
+#======================================================================================================================
+# Add installation dependencies.
+#======================================================================================================================
+
+bf-echo "Installing installation dependencies..."
+apk add --no-cache --virtual .install \
+    git
+bf-done
+
+
+#======================================================================================================================
+# Get source code and build.
+#======================================================================================================================
+
+cd /tmp
+chmod +x ./install*
+
+SEND_VERSION=$(cat SEND_REVISION)
+bf-echo "Send version ${SEND_VERSION}."
+
+bf-echo "Cloning Send v${SEND_VERSION} into /tmp/send..."
+git clone --depth 1 --branch v${SEND_VERSION} https://github.com/timvisee/send send
+bf-done
+
+bf-echo "Setting ownership..."
+bf-ch -o node:node -r /tmp/send
+bf-done
+
+bf-echo "Building application..."
+cd send
+export HOME=`pwd`
+s6-setuidgid node /tmp/install-build
+bf-done
+
+
+#======================================================================================================================
+# Copy built code to /app directory.
+#======================================================================================================================
+
+bf-echo "Copying code to /app/live..."
+mkdir -p /app/live/public && cd /app/live
+cp /tmp/send/package*.json .
+cp -R /tmp/send/app .
+cp -R /tmp/send/common .
+cp -R /tmp/send/public/locales ./public
+cp -R /tmp/send/server .
+cp -R /tmp/send/dist .
+bf-done
+
+bf-echo "Setting ownershp..."
+bf-ch -o node:node -r /app
+bf-done
+
+
+#======================================================================================================================
+# Configure app for production.
+#======================================================================================================================
+
+bf-echo "Configuring app..."
+s6-setuidgid node /tmp/install-configure
+bf-done
+
+
+#======================================================================================================================
+# Cleanup.
+#======================================================================================================================
+
+bf-echo "Removing installation dependencies."
+apk del .install
+
+bf-echo "Removing base index.js"
+rm /app/live/index.js

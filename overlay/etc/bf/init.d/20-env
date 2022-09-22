@@ -1,0 +1,30 @@
+#!/command/with-contenv sh
+
+set -euo pipefail
+export BF_E=`basename ${0}`
+
+
+#======================================================================================================================
+# Override run variable.
+#======================================================================================================================
+
+bf-env "NODE_RUN" "${NODE_APP_LIVE}/server/bin/prod.js"
+
+
+#======================================================================================================================
+# Set Send environment variables - SEND_BASE_URL is required.
+#======================================================================================================================
+
+[["${SEND_BASE_URL}" = ""]] && bf-error "You must set SEND_BASE_URL before running." "20-env"
+
+bf-env "PORT" "3000"
+bf-env "BASE_URL" "${SEND_BASE_URL}"
+bf-env "FILE_DIR" "${SEND_FILE_DIR}"
+bf-env "MAX_FILE_SIZE" "${SEND_MAX_FILE_SIZE}"
+bf-env "MAX_FILES_PER_ARCHIVE" "${SEND_MAX_FILES_PER_ARCHIVE}"
+bf-env "MAX_EXPIRE_SECONDS" "${SEND_MAX_EXPIRE_SECONDS}"
+bf-env "MAX_DOWNLOADS" "${SEND_MAX_DOWNLOADS}"
+bf-env "DOWNLOAD_COUNTS" "${SEND_DOWNLOAD_COUNTS}"
+bf-env "DEFAULT_DOWNLOADS" "${SEND_DEFAULT_DOWNLOAD_COUNT}"
+bf-env "EXPIRE_TIMES_SECONDS" "${SEND_EXPIRE_TIMES_SECONDS}"
+bf-env "DEFAULT_EXPIRE_SECONDS" "${SEND_DEFAULT_EXPIRE_TIME_SECONDS}"
