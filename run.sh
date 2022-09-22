@@ -9,4 +9,4 @@ docker buildx build \
     -t send-dev \
     . \
     && \
-    docker run -it send-dev sh
+    docker run -it --name send send-dev sh
