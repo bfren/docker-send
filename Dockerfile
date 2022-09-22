@@ -8,6 +8,8 @@ ARG BF_VERSION
 ENV \
     # set the base URL
     SEND_BASE_URL= \
+    # path to uploads storage directory
+    SEND_FILE_DIR=/uploads \
     # maximum file size (default: 2GB)
     SEND_MAX_FILE_SIZE=2147483648 \
     # maximum files per archive (default: 64)

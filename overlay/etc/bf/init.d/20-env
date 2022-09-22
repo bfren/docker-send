@@ -14,6 +14,7 @@ bf-env "NODE_RUN" "${NODE_APP_LIVE}/server/bin/prod.js"
 # set Send environment variables
 bf-env "PORT" "3000"
 bf-env "BASE_URL" "${SEND_BASE_URL}"
+bf-env "FILE_DIR" "${SEND_FILE_DIR}"
 bf-env "MAX_FILE_SIZE" "${SEND_MAX_FILE_SIZE}"
 bf-env "MAX_FILES_PER_ARCHIVE" "${SEND_MAX_FILES_PER_ARCHIVE}"
 bf-env "MAX_EXPIRE_SECONDS" "${SEND_MAX_EXPIRE_SECONDS}"
