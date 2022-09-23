@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
   send:
-    image: bfren/send:dev
+    image: bfren/send
     container_name: send-server
-    restart: always
+    restart: unless-stopped
     environment:
       - SEND_BASE_URL=${BASE_URL}
     volumes:
@@ -15,7 +15,7 @@ services:
   redis:
     image: bfren/redis:redis7
     container_name: send-redis
-    restart: always
+    restart: unless-stopped
     networks:
       - send
 
