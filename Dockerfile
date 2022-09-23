@@ -30,11 +30,11 @@ ENV \
     SEND_REDIS_HOST=redis \
     # set the redis port (default: 6379)
     SEND_REDIS_PORT=6379 \
-    # set the redis username
+    # set the optional redis username
     SEND_REDIS_USER= \
-    # set the redis password
+    # set the optional redis password
     SEND_REDIS_PASSWORD= \
-    # set the redis database name
+    # set the optional redis database
     SEND_REDIS_DB=
 
 COPY ./overlay /
