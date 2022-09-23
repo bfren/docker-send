@@ -25,7 +25,17 @@ ENV \
     # comma-separated expiry time options to show in UI dropdown in seconds (default: 1 hour, 1 day, 1 week)
     SEND_EXPIRE_TIMES_SECONDS=3600,86400,604800 \
     # default expiry time in UI (default: 1 day)
-    SEND_DEFAULT_EXPIRE_TIME_SECONDS=86400
+    SEND_DEFAULT_EXPIRE_TIME_SECONDS=86400 \
+    # set the redis host (default: redis)
+    SEND_REDIS_HOST=redis \
+    # set the redis port (default: 6379)
+    SEND_REDIS_PORT=6379 \
+    # set the redis username
+    SEND_REDIS_USER= \
+    # set the redis password
+    SEND_REDIS_PASSWORD= \
+    # set the redis database name
+    SEND_REDIS_DB=
 
 COPY ./overlay /
 
