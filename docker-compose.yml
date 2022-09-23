@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  send:
+    image: bfren/send:dev
+    container_name: send-server
+    restart: always
+    environment:
+      - SEND_BASE_URL=${BASE_URL}
+    volumes:
+      - ./v/uploads:/uploads
+    networks:
+      - proxy
+      - send
+  redis:
+    image: bfren/redis:redis7
+    container_name: send-redis
+    restart: always
+    networks:
+      - send
+
+networks:
+  send:
+    driver: bridge
+    name: send
+  proxy:
+    external: true
