@@ -1,12 +1,30 @@
 version: "3.8"
 
 services:
+  proxy:
+    image: bfren/nginx-proxy:5
+    container_name: proxy
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    environment:
+      - PROXY_URI=${PROXY_URI}
+      - PROXY_LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
+      - PROXY_LETS_ENCRYPT_LIVE=1
+      - PROXY_AUTO_PRIMARY=${SEND_URI}
+      - PROXY_AUTO_UPSTREAM=http://send:3000
+    volumes:
+      - ./v/sites:/sites
+      - ./v/ssl:/ssl
+    networks:
+      - proxy
   send:
     image: bfren/send
-    container_name: send-server
+    container_name: send
     restart: unless-stopped
     environment:
-      - SEND_BASE_URL=${BASE_URL}
+      - SEND_BASE_URI=https://${SEND_URI}
     volumes:
       - ./v/uploads:/uploads
     networks:
@@ -14,7 +32,7 @@ services:
       - send
   redis:
     image: bfren/redis:redis7
-    container_name: send-redis
+    container_name: redis
     restart: unless-stopped
     networks:
       - send
@@ -24,4 +42,5 @@ networks:
     driver: bridge
     name: send
   proxy:
-    external: true
+    driver: bridge
+    name: proxy

@@ -42,7 +42,7 @@ See the [Node](https://github.com/bfren/docker-node) image for other configurati
 
 | Variable                           | Values  | Description                                                                                             | Default                                  |
 | ---------------------------------- | ------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `SEND_BASE_URL`                    | string  | Set the base URL.                                                                                       | *None* - required                        |
+| `SEND_BASE_URI`                    | string  | Set the base URI from which Send will be accessed.                                                      | *None* - required                        |
 | `SEND_FILE_DIR`                    | string  | Path to uploads storage directory.                                                                      | /uploads                                 |
 | `SEND_MAX_FILE_SIZE`               | integer | Maximum file size in bytes (default: 2GB).                                                              | 2147483648 (2GB)                         |
 | `SEND_MAX_FILES_PER_ARCHIVE`       | integer | Maximum files per archive (default: 64).                                                                | 64                                       |

@@ -6,8 +6,8 @@ ARG BF_IMAGE
 ARG BF_VERSION
 
 ENV \
-    # set the base URL
-    SEND_BASE_URL= \
+    # set the base URI
+    SEND_BASE_URI= \
     # path to uploads storage directory
     SEND_FILE_DIR=/uploads \
     # maximum file size in bytes (default: 2GB)
