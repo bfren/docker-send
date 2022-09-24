@@ -12,15 +12,15 @@ bf-env "NODE_RUN" "${NODE_APP_LIVE}/server/bin/prod.js"
 
 
 #======================================================================================================================
-# Set Send environment variables - SEND_BASE_URL is required.
+# Set Send environment variables - SEND_BASE_URI is required.
 #======================================================================================================================
 
-[[ -z "${SEND_BASE_URL-}" ]] && bf-error "You must set SEND_BASE_URL before running." "20-env"
+[[ -z "${SEND_BASE_URI-}" ]] && bf-error "You must set SEND_BASE_URI before running." "20-env"
 
 bf-env "PORT" "3000"
 
 bf-env "NODE_ENV" "production"
-bf-env "BASE_URL" "${SEND_BASE_URL}"
+bf-env "BASE_URL" "${SEND_BASE_URI}"
 bf-env "FILE_DIR" "${SEND_FILE_DIR}"
 
 bf-env "MAX_FILE_SIZE" "${SEND_MAX_FILE_SIZE}"
