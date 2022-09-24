@@ -11,6 +11,7 @@ services:
     environment:
       - PROXY_URI=${PROXY_URI}
       - PROXY_LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
+      - PROXY_LETS_ENCRYPT_LIVE=1
       - PROXY_AUTO_PRIMARY=${SEND_URI}
       - PROXY_AUTO_UPSTREAM=http://send:3000
     volumes:
@@ -23,7 +24,7 @@ services:
     container_name: send
     restart: unless-stopped
     environment:
-      - SEND_BASE_URI=${SEND_URI}
+      - SEND_BASE_URI=https://${SEND_URI}
     volumes:
       - ./v/uploads:/uploads
     networks:
