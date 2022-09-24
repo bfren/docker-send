@@ -12,8 +12,11 @@ You need to ensure you allow websockets, e.g. if you are using [Nginx Proxy](htt
 ```bash
 # in proxy image volume: /sites
 
-# create file: DOMAIN.d/websockets.conf (where DOMAIN is the same )
+# create file: DOMAIN.d/websockets.conf (where DOMAIN is the Send domain)
 include helpers/proxy-params-websockets.conf;
+
+# then run this on the host
+docker exec proxy nginx-reload
 ```
 
 ## Contents
