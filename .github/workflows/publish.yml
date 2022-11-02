@@ -18,37 +18,37 @@ jobs:
         shell: bash
       -
         name: Read Send version - major
-        uses: bfren/read-file@v1
+        uses: bfren/read-file@v2
         with:
           file: ./overlay/tmp/SEND_MAJOR
         id: send_major
       -
         name: Read Send version - minor
-        uses: bfren/read-file@v1
+        uses: bfren/read-file@v2
         with:
           file: ./overlay/tmp/SEND_MINOR
         id: send_minor
       -
         name: Read Send version - revision
-        uses: bfren/read-file@v1
+        uses: bfren/read-file@v2
         with:
           file: ./overlay/tmp/SEND_REVISION
         id: send_revision
       -
         name: Read image version
-        uses: bfren/read-file@v1
+        uses: bfren/read-file@v2
         with:
           file: ./VERSION_MAJOR
         id: version_major
       -
         name: Read image version
-        uses: bfren/read-file@v1
+        uses: bfren/read-file@v2
         with:
           file: ./VERSION_MINOR
         id: version_minor
       -
         name: Read image version
-        uses: bfren/read-file@v1
+        uses: bfren/read-file@v2
         with:
           file: ./VERSION
         id: version
