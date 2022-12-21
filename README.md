@@ -1,7 +1,6 @@
 # Docker Send
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-send) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Fsend) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Fsend)<br/>
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bfren/docker-send/dev?label=build)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-send) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Fsend) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Fsend) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bfren/docker-send/dev.yml?branch=main)
 
 [Docker Repository](https://hub.docker.com/r/bfren/send) - [bfren ecosystem](https://github.com/bfren/docker)
 
