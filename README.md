@@ -58,4 +58,4 @@ See the [Node](https://github.com/bfren/docker-node) image for other configurati
 
 ## Copyright
 
-> Copyright (c) 2022 [bfren](https://bfren.dev) (unless otherwise stated)
+> Copyright (c) 2022-2023 [bfren](https://bfren.dev) (unless otherwise stated)
