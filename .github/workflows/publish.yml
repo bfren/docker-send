@@ -91,15 +91,6 @@ jobs:
             bfren/send:send${{ steps.send_minor.outputs.contents }}
             bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}
             bfren/send:send${{ steps.send_revision.outputs.contents }}
-            ghcr.io/bfren/send:latest
-            ghcr.io/bfren/send:${{ steps.version_major.outputs.contents }}
-            ghcr.io/bfren/send:${{ steps.version_minor.outputs.contents }}
-            ghcr.io/bfren/send:${{ steps.version.outputs.contents }}
-            ghcr.io/bfren/send:send${{ steps.send_major.outputs.contents }}
-            ghcr.io/bfren/send:send${{ steps.send_major.outputs.contents }}-${{ steps.version.outputs.contents }}
-            ghcr.io/bfren/send:send${{ steps.send_minor.outputs.contents }}
-            ghcr.io/bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}
-            ghcr.io/bfren/send:send${{ steps.send_revision.outputs.contents }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
