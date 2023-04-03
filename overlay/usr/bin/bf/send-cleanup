@@ -11,9 +11,9 @@ export BF_E=`basename ${0}`
 #======================================================================================================================
 
 remove_files () {
-    for FILE in "${1}" ; do
+    for FILE in ${1} ; do
         [[ ! -f "${FILE}" ]] && continue
-        bf-echo "Removing expired file ${FILE}." "upload-cleanup"
+        bf-echo "Removing expired file ${FILE}." "send-cleanup"
         rm -f ${FILE}
     done
 }
@@ -24,7 +24,7 @@ remove_files () {
 # Files are stored using the number of days they should be kept as the filename prefix.
 #======================================================================================================================
 
-bf-debug "Removing files by their expiry time." "upload-cleanup"
+bf-debug "Removing files by their expiry time." "send-cleanup"
 for SEC in `echo ${SEND_EXPIRE_TIMES_SECONDS} | tr ',' '\n'` ; do
 
     # calculate the number of minutes (find does not support seconds)
@@ -35,11 +35,16 @@ for SEC in `echo ${SEND_EXPIRE_TIMES_SECONDS} | tr ',' '\n'` ; do
     [[ ${DAY} -eq 0 ]] && DAY=1
 
     # search for files with DAY as the prefix and modified more than MIN ago
-    bf-debug "Searching for files named ${DAY}-* and modified more than ${MIN}m ago..." "upload-cleanup"
+    bf-debug "Searching for files named ${DAY}-* and modified more than ${MIN}m ago..." "send-cleanup"
     FILES=`find ${SEND_FILE_DIR} -type f -name ${DAY}-\* -mmin +${MIN} | xargs`
 
     # use function to remove each found file
-    remove_files "${FILES}"
+    if [ -z "${FILES}" ] ; then
+        bf-debug "No expired files found." "send-cleanup"
+    else
+        bf-debug "Removing ${FILES}..." "send-cleanup"
+        remove_files "${FILES}"
+    fi
 
 done
 exit 0
@@ -50,11 +55,11 @@ exit 0
 #======================================================================================================================
 
 # calculate the number of minutes (find does not support seconds)
-bf-debug "Removing files by maximum expiry time." "upload-cleanup"
+bf-debug "Removing files by maximum expiry time." "send-cleanup"
 MAX_MIN=$((SEND_MAX_EXPIRE_SECONDS / 60))
 
 # search for files modified more than MAX_MIN ago
-bf-debug "Searching for files modified more than the maximum ${MAX_MIN}m ago..." "upload-cleanup"
+bf-debug "Searching for files modified more than the maximum ${MAX_MIN}m ago..." "send-cleanup"
 FILES=`find ${SEND_FILE_DIR} -type f -mmin +${MIN} | xargs`
 
 # use function to remove each found file
