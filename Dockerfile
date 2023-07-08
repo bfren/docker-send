@@ -1,4 +1,4 @@
-FROM bfren/node:node16-2.2.4
+FROM bfren/node:node16-2.2.5
 
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-send"
 
