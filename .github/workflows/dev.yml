@@ -53,7 +53,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             bfren/send:dev
-            bfren/send:${{ steps.version.outputs.contents }}-beta
+            bfren/send:${{ steps.version.outputs.contents }}-dev
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
