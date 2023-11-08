@@ -24,17 +24,17 @@ def main [] {
     bf ch --mode +x app-*
 
     # clone source code
-    bf write " .. cloning source code"
+    bf write "Cloning source code."
     git clone --depth 1 --branch $"v($version)" https://github.com/timvisee/send send
     cd send
     let send = pwd
 
     # set ownership
-    bf write " .. setting ownership of source files"
+    bf write "Setting ownership of source files."
     bf ch --owner $"($user):($user)" --recurse $send
 
     # build application as node user
-    bf write " .. building application"
+    bf write "Building application."
     with-env {HOME: $home} {
         { ^s6-setuidgid $user /tmp/app-build } | bf handle -d "Install: Build"
     }
@@ -47,7 +47,7 @@ def main [] {
     mkdir "public"
 
     # copy built application to src directory
-    bf write $" .. copying Send to ($src)"
+    bf write $"Copying Send to ($src)."
     cp $"($send)/package*.json" .
     cp -r $"($send)/app" .
     cp -r $"($send)/common" .
@@ -57,19 +57,20 @@ def main [] {
     ^ln -s dist/version.json version.json
 
     # set ownership
-    bf write " .. setting ownership of application files"
+    bf write "Setting ownership of application files."
     bf ch --owner $"($user):($user)" --recurse $src
 
     # configure application
-    bf write " .. configurating application"
+    bf write "Configurating application."
     with-env {HOME: $home} {
         { ^s6-setuidgid $user /tmp/app-configure } | bf handle -d "Install: Configure"
     }
 
     # set ownership
-    bf write " .. making application files read-only"
+    bf write "Making application files read-only."
     bf ch --mode 0400 --recurse $src
 
     # cleanup
+    bf write "Cleaning up."
     bf pkg remove [".install"]
 }
