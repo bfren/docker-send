@@ -67,8 +67,8 @@ def main [] {
     }
 
     # set ownership
-    bf write "Making application files read-only."
-    bf ch --mode 0400 --recurse $src
+    bf write "Setting permissions for application files."
+    bf ch --mode 0500 --recurse $src
 
     # add bf-send module to config
     bf config use bf-send
