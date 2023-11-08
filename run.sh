@@ -4,10 +4,11 @@ IMAGE=`cat VERSION`
 
 docker buildx build \
     --load \
-    --build-arg BF_IMAGE=node \
+    --progress plain \
+    --build-arg BF_IMAGE=send \
     --build-arg BF_VERSION=${IMAGE} \
     -f Dockerfile \
     -t send-dev \
     . \
     && \
-    docker run -it --name send send-dev sh
+    docker run -it -e BF_DEBUG=1 -e BF_SEND_URI=http://localhost send-dev sh
