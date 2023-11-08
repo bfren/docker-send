@@ -6,4 +6,5 @@
 #======================================================================================================================
 
 PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci
+npm audit fix
 npm run build

@@ -5,7 +5,5 @@
 # Configure app.
 #======================================================================================================================
 
-npm ci --production
-npm cache clean --force \
-mkdir -p /app/.config/configstore \
-ln -s dist/version.json version.json
+npm ci --omit=dev
+npm cache clean --force
