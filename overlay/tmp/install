@@ -12,7 +12,7 @@ def main [] {
 
     # get Send version
     cd /tmp
-    let version = bf fs read ./SEND_REVISION
+    let version = bf fs read SEND_REVISION
     bf write $"Installing Send v($version)."
     bf build add Send $version
 
