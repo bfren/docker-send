@@ -1,0 +1,8 @@
+#!/usr/bin/nu
+
+use bf
+use bf-send
+bf env load -x
+
+# Remove all expired files from uploads directory
+def main [] { bf-send cleanup }

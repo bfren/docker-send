@@ -1,78 +1,79 @@
-#!/bin/sh
+#!/usr/bin/nu
 
-set -euo pipefail
-export BF_E=`basename ${0}`
+use bf
 
+# Setup and install Send
+def main [] {
+    # add installation dependencies
+    bf pkg install [
+        "--virtual .install"
+        "git"
+    ]
 
-#======================================================================================================================
-# Add installation dependencies.
-#======================================================================================================================
+    # get Send version
+    cd /tmp
+    let version = bf fs read SEND_REVISION
+    bf write $"Installing Send v($version)."
+    bf build add Send $version
 
-bf-echo "Installing installation dependencies..."
-apk add --no-cache --virtual .install \
-    git
-bf-done
+    # get details of node user
+    let user = "node"
+    let home = $"/home/($user)"
 
+    # mark app scripts as executable
+    bf ch --mode +x app-*
 
-#======================================================================================================================
-# Get source code and build.
-#======================================================================================================================
+    # clone source code
+    bf write "Cloning source code."
+    git clone --depth 1 --branch $"v($version)" https://github.com/timvisee/send send
+    cd send
+    let send = pwd
 
-cd /tmp
-chmod +x ./install*
+    # set ownership
+    bf write "Setting ownership of source files."
+    bf ch --owner $"($user):($user)" --recurse $send
 
-SEND_VERSION=$(cat SEND_REVISION)
-bf-echo "Send version ${SEND_VERSION}."
+    # build application as node user
+    bf write "Building application."
+    with-env {HOME: $home} {
+        { ^s6-setuidgid $user /tmp/app-build } | bf handle -d "Install: Build"
+    }
 
-bf-echo "Cloning Send v${SEND_VERSION} into /tmp/send..."
-git clone --depth 1 --branch v${SEND_VERSION} https://github.com/timvisee/send send
-bf-done
+    # create folder structure
+    let src = $"(bf env ETC)/src/send"
+    mkdir $src
+    cd $src
+    mkdir ".config/configstore"
+    mkdir "public"
 
-bf-echo "Setting ownership..."
-bf-ch -o node:node -r /tmp/send
-bf-done
+    # copy built application to src directory
+    bf write $"Copying Send to ($src)."
+    cp $"($send)/package*.json" .
+    cp -r $"($send)/app" .
+    cp -r $"($send)/common" .
+    cp -r $"($send)/dist" .
+    cp -r $"($send)/public/locales" ./public
+    cp -r $"($send)/server" .
+    ^ln -s dist/version.json version.json
 
-bf-echo "Building application..."
-cd send
-export HOME=`pwd`
-s6-setuidgid node /tmp/install-build
-bf-done
+    # set ownership
+    bf write "Setting ownership of application files."
+    bf ch --owner $"($user):($user)" --recurse $src
 
+    # configure application
+    bf write "Configurating application."
+    with-env {HOME: $home} {
+        { ^s6-setuidgid $user /tmp/app-configure } | bf handle -d "Install: Configure"
+    }
 
-#======================================================================================================================
-# Copy built code to /app directory.
-#======================================================================================================================
+    # set ownership
+    bf write "Setting permissions for application files."
+    bf ch --mode 0500 --recurse $src
 
-bf-echo "Copying code to /app/live..."
-mkdir -p /app/live/public && cd /app/live
-cp /tmp/send/package*.json .
-cp -R /tmp/send/app .
-cp -R /tmp/send/common .
-cp -R /tmp/send/public/locales ./public
-cp -R /tmp/send/server .
-cp -R /tmp/send/dist .
-bf-done
+    # add bf-send module to config
+    bf config use bf-send
 
-bf-echo "Setting ownershp..."
-bf-ch -o node:node -r /app
-bf-done
-
-
-#======================================================================================================================
-# Configure app for production.
-#======================================================================================================================
-
-bf-echo "Configuring app..."
-s6-setuidgid node /tmp/install-configure
-bf-done
-
-
-#======================================================================================================================
-# Cleanup.
-#======================================================================================================================
-
-bf-echo "Removing installation dependencies."
-apk del .install
-
-bf-echo "Removing base index.js"
-rm /app/live/index.js
+    # cleanup
+    bf write "Cleaning up."
+    bf pkg remove [".install"]
+}

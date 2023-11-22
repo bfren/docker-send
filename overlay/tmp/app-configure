@@ -1,11 +1,9 @@
-#!/command/with-contenv sh
-
-set -euo pipefail
-export BF_E=`basename ${0}`
+#!/bin/sh
 
 
 #======================================================================================================================
-# Use executable to cleanup old uploads.
+# Configure app.
 #======================================================================================================================
 
-send-cleanup
+npm ci --omit=dev
+npm cache clean --force

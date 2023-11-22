@@ -39,18 +39,25 @@ See the [Node](https://github.com/bfren/docker-node) image for other configurati
 
 ## Environment Variables
 
-| Variable                           | Values  | Description                                                                                             | Default                                  |
-| ---------------------------------- | ------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `SEND_BASE_URI`                    | string  | Set the base URI from which Send will be accessed.                                                      | *None* - required                        |
-| `SEND_FILE_DIR`                    | string  | Path to uploads storage directory.                                                                      | /uploads                                 |
-| `SEND_MAX_FILE_SIZE`               | integer | Maximum file size in bytes (default: 2GB).                                                              | 2147483648 (2GB)                         |
-| `SEND_MAX_FILES_PER_ARCHIVE`       | integer | Maximum files per archive (default: 64).                                                                | 64                                       |
-| `SEND_MAX_EXPIRE_SECONDS`          | integer | Maximum upload expiry time in seconds (default: 7 days).                                                | 604800 (7 days)                          |
-| `SEND_MAX_DOWNLOADS`               | integer | Maximum number of downloads (default: 100).                                                             | 10                                       |
-| `SEND_DOWNLOAD_COUNTS`             | string  | Comma-separated download limit options to show in UI dropdown (default: 1, 5, 10).                      | 1,5,10                                   |
-| `SEND_DEFAULT_DOWNLOAD_COUNT`      | integer | Default download limit in UI (default: 1).                                                              | 1                                        |
-| `SEND_EXPIRE_TIMES_SECONDS`        | string  | Comma-separated expiry time options to show in UI dropdown in seconds (default: 1 hour, 1 day, 1 week). | 3600,86400,604800 (1 day, 1 day, 1 week) |
-| `SEND_DEFAULT_EXPIRE_TIME_SECONDS` | integer | Default expiry time in UI (default: 1 day).                                                             | 86400 (1 day)                            |
+For `nu` duration and filesize types, visit [here](https://www.nushell.sh/book/types_of_data.html).
+
+| Variable                          | Values                | Description                                                                           | Default               |
+| --------------------------------- | --------------------- | ------------------------------------------------------------------------------------- | --------------------- |
+| `BF_SEND_URI`                     | string                | Set the base URI from which Send will be accessed.                                    | *None* - required     |
+| `BF_SEND_DIR`                     | string                | Path to uploads storage directory.                                                    | /uploads              |
+| `BF_SEND_DOWNLOAD_COUNT`          | nuon integer list     | Comma-separated download limit options to show in UI dropdown.                        | [1, 5, 10]            |
+| `BF_SEND_DOWNLOAD_COUNT_DEFAULT`  | integer               | Default download limit in UI (default: 1).                                            | 1                     |
+| `BF_SEND_DOWNLOAD_COUNT_MAX`      | integer               | Maximum number of downloads (default: 100).                                           | 10                    |
+| `BF_SEND_EXPIRE`                  | nuon duration list    | Comma-separated expiry time options to show in UI dropdown in seconds (default: ).    | [1hr, 1day, 1wk, 4wk] |
+| `BF_SEND_EXPIRE_DEFAULT`          | nu duration           | Default expiry time in UI (default: 1day).                                            | 1wk                   |
+| `BF_SEND_EXPIRE_MAX`              | nu duration           | Maximum upload expiry time in seconds.                                                | 4wk                   |
+| `BF_SEND_FILES_MAX_PER_ARCHIVE`   | integer               | Maximum files per archive (default: 64).                                              | 64                    |
+| `BF_SEND_FILES_MAX_SIZE`          | integer               | Maximum file size in bytes (default: 2gb).                                            | 2gb                   |
+| `BF_SEND_REDIS_DB`                | integer               | Redis database number.                                                                | *None* - optional     |
+| `BF_SEND_REDIS_HOST`              | string                | Redis server host.                                                                    | *None* - optional     |
+| `BF_SEND_REDIS_PASS`              | string                | Redis authentication password.                                                        | *None* - optional     |
+| `BF_SEND_REDIS_PORT`              | integer               | Redis server port.                                                                    | *None* - optional     |
+| `BF_SEND_REDIS_USER`              | string                | Redis authentication username.                                                        | *None* - optional     |
 
 ## Licence
 
