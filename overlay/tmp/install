@@ -5,10 +5,7 @@ use bf
 # Setup and install Send
 def main [] {
     # add installation dependencies
-    bf pkg install [
-        "--virtual .install"
-        "git"
-    ]
+    bf pkg install ["--virtual" ".install" "git"]
 
     # get Send version
     cd /tmp
