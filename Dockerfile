@@ -1,8 +1,9 @@
-FROM bfren/node:node16-3.1.3
+FROM bfren/node:node16-3.2.0
 
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-send"
 
 ARG BF_IMAGE
+ARG BF_PUBLISHING
 ARG BF_VERSION
 
 COPY ./overlay /
