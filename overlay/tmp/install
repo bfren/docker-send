@@ -45,7 +45,7 @@ def main [] {
 
     # copy built application to src directory
     bf write $"Copying Send to ($src)."
-    cp $"($send)/package*.json" .
+    echo $"($send)/package*.json" | into glob | cp $in .
     cp -r $"($send)/app" .
     cp -r $"($send)/common" .
     cp -r $"($send)/dist" .
