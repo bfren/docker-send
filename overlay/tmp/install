@@ -32,7 +32,7 @@ def main [] {
 
     # build application as node user
     bf write "Building application."
-    with-env {HOME: $home} {
+    with-env { HOME: $home } {
         { ^s6-setuidgid $user /tmp/app-build } | bf handle -d "Install: Build"
     }
 
@@ -59,7 +59,7 @@ def main [] {
 
     # configure application
     bf write "Configurating application."
-    with-env {HOME: $home} {
+    with-env { HOME: $home } {
         { ^s6-setuidgid $user /tmp/app-configure } | bf handle -d "Install: Configure"
     }
 
