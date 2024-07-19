@@ -1,4 +1,4 @@
-FROM ghcr.io/bfren/node:node16-3.2.10
+FROM ghcr.io/bfren/node:node16-3.2.11
 
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-send"
 
