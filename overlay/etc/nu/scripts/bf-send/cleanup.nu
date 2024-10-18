@@ -14,7 +14,7 @@ export def main [] {
             bf write debug $"File ($x.name) expires on ($expiry)." cleanup
         } else {
             bf write $"File ($x.name) expired on ($expiry)." cleanup
-            bf del force $x.name
+            rm --force $x.name
         }
     }
 }
