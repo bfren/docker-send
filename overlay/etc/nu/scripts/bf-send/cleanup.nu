@@ -2,19 +2,29 @@ use bf
 
 # Remove all expired files from uploads directory
 export def main [] {
-    # for each file in uploads directory, if it has expired, delete it
-    bf env -P FILE_DIR | ls --full-paths | select name modified | each {|x|
-        # get the expiry date and time of this file
-        # Send stores files as DAYS-REF, where DAYS is the number of days to keep the file for
-        let days = $x.name | path basename | parse "{days}-{ref}" | get days | into int | into duration --unit day
-        let expiry = $x.modified + $days
+    # parse uploaded files stored as DAYS-REF, where DAYS is the number of days to keep the file for
+    let $files = bf env -P FILE_DIR | ls --full-paths | each {|x|
+        $x.name | path basename | parse "{days}-{ref}" | into record | insert path { $x.name } | insert modified { $x.modified }
+    }
 
-        # if the expiry time has passed, delete the file
+    # remove any files that have passed their expiry date
+    let $removed = $files | where {|x| $x.days? != null } | each {|x|
+        let expiry = $x.days | into int | into duration --unit day | $x.modified + $in
         if $expiry > (date now) {
-            bf write debug $"File ($x.name) expires on ($expiry)." cleanup
+            bf write debug $"File ($x.days)-($x.ref) expires on ($expiry)." cleanup
         } else {
-            bf write $"File ($x.name) expired on ($expiry)." cleanup
+            bf write $"File ($x.days)-($x.ref) expired on ($expiry)." cleanup
             rm --force $x.name
+            $x.name
         }
     }
+
+    # output action taken
+    if ($removed | length) == 0 {
+        bf write "No files were removed." cleanup
+    } else {
+        bf write $"($removed | length) files were removed." cleanup
+    }
+
+    return
 }
