@@ -4,7 +4,7 @@ use bf
 export def main [] {
     # parse uploaded files stored as DAYS-REF, where DAYS is the number of days to keep the file for
     let files = bf env -P FILE_DIR
-        | ls --full-paths
+        | ls --full-paths $in
         | each {|x|
             $x.name
                 | path basename
