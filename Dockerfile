@@ -1,4 +1,4 @@
-FROM quay.io/bfren/node:node20-4.1.7
+FROM quay.io/bfren/node:node20-4.1.8
 
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-send"
 
