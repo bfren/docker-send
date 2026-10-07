@@ -68,7 +68,7 @@ def main [] {
     bf ch --mode 0500 --recurse $src
 
     # add bf-send module to config
-    bf config use bf-send
+    bf config use_mod bf-send
 
     # cleanup
     bf write "Cleaning up."
