@@ -1,1 +1,1 @@
-export module cleanup.nu
+export use cleanup.nu
