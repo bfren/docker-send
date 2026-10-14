@@ -27,6 +27,36 @@ jobs:
           file: ./VERSION
         id: version
       -
+        name: Read Send version - major
+        uses: bfren/read-file@v2
+        with:
+          file: ./overlay/tmp/SEND_MAJOR
+        id: send_major
+      -
+        name: Read Send version - minor
+        uses: bfren/read-file@v2
+        with:
+          file: ./overlay/tmp/SEND_MINOR
+        id: send_minor
+      -
+        name: Read Send version - revision
+        uses: bfren/read-file@v2
+        with:
+          file: ./overlay/tmp/SEND_REVISION
+        id: send_revision
+      -
+        name: Read image version
+        uses: bfren/read-file@v2
+        with:
+          file: ./VERSION_MAJOR
+        id: version_major
+      -
+        name: Read image version
+        uses: bfren/read-file@v2
+        with:
+          file: ./VERSION_MINOR
+        id: version_minor
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v4
       -
@@ -72,9 +102,23 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             bfren/send:dev
+            bfren/send:${{ steps.version_major.outputs.contents }}-dev
+            bfren/send:${{ steps.version_minor.outputs.contents }}-dev
             bfren/send:${{ steps.version.outputs.contents }}-dev
+            bfren/send:send${{ steps.send_major.outputs.contents }}-dev
+            bfren/send:send${{ steps.send_major.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
+            bfren/send:send${{ steps.send_minor.outputs.contents }}-dev
+            bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
+            bfren/send:send${{ steps.send_revision.outputs.contents }}-dev
             quay.io/bfren/send:dev
+            quay.io/bfren/send:${{ steps.version_major.outputs.contents }}-dev
+            quay.io/bfren/send:${{ steps.version_minor.outputs.contents }}-dev
             quay.io/bfren/send:${{ steps.version.outputs.contents }}-dev
+            quay.io/bfren/send:send${{ steps.send_major.outputs.contents }}-dev
+            quay.io/bfren/send:send${{ steps.send_major.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
+            quay.io/bfren/send:send${{ steps.send_minor.outputs.contents }}-dev
+            quay.io/bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
+            quay.io/bfren/send:send${{ steps.send_revision.outputs.contents }}-dev
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
