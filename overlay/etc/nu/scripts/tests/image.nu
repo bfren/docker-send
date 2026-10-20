@@ -22,6 +22,10 @@ export def install__server_is_installed [] {
     assert ($"($src)/node_modules" | path exists) "production dependencies should be installed"
 }
 
+export def install__routes_do_not_log_base_url [] {
+    assert not (open --raw $"($src)/server/routes/index.js" | str contains "console.log([baseUrl") "the base URL should not be logged on every request"
+}
+
 export def install__express_ws_does_not_need_esm [] {
     # the 'esm' package fails on newer versions of Node.js, so express-ws is converted to CommonJS during the build
     let dir = $"($src)/node_modules/@dannycoates/express-ws"

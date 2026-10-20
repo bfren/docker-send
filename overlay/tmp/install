@@ -26,6 +26,11 @@ def main [] {
     cd send
     let send = pwd
 
+    # remove debug logging from the CSP connect-src function, which prints the base URL on every request
+    bf write "Removing debug logging."
+    let routes = "server/routes/index.js"
+    open --raw $routes | str replace "console.log([baseUrl, r]);" "" | save --force $routes
+
     # set ownership
     bf write "Setting ownership of source files."
     bf ch --owner $"($user):($user)" --recurse $send
