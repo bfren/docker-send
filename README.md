@@ -122,7 +122,7 @@ The health check is the base image's, which checks cron (and so the hourly clean
 ## Testing
 
 ```sh
-./test.sh   # builds the image and runs /test
+./test.nu   # builds the image and runs /test
 ./run.sh    # builds the image and opens a shell, with Send on 127.0.0.1:3000
 ```
 
