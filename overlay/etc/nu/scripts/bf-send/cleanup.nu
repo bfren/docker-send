@@ -1,9 +1,11 @@
 use bf
 
 # Remove all expired files from uploads directory
-export def main [] {
+export def main [
+    dir?: string    # Uploads directory (default: FILE_DIR)
+] {
     # parse uploaded files stored as DAYS-REF, where DAYS is the number of days to keep the file for
-    let files = bf env -P FILE_DIR
+    let files = if ($dir | is-empty) { bf env -P FILE_DIR } else { $dir }
         | ls --full-paths $in
         | each {|x|
             $x.name
@@ -26,8 +28,8 @@ export def main [] {
                 bf write debug $"File ($x.days)-($x.ref) expires on ($expiry)." cleanup
             } else {
                 bf write $"File ($x.days)-($x.ref) expired on ($expiry)." cleanup
-                rm --force $x.name
-                $x.name
+                rm --force $x.path
+                $x.path
             }
         }
 
