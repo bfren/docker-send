@@ -8,7 +8,7 @@
 
 [Send](https://github.com/timvisee/send) lets you share files with end-to-end encryption and a link that expires - a community fork of Mozilla's discontinued Firefox Send.
 
-It is built on [Node.js](https://github.com/bfren/docker-node) (version 20), with Send built from source when the image is built. Configure it with `BF_SEND_*` variables using friendly values such as `1wk` and `2gb`, and expired uploads are deleted from disk every hour.
+It is built on [Node.js](https://github.com/bfren/docker-node) (version 24), with Send built from source when the image is built. Configure it with `BF_SEND_*` variables using friendly values such as `1wk` and `2gb`, and expired uploads are deleted from disk every hour.
 
 Send needs [Redis](https://github.com/bfren/docker-redis) to store details of uploads, and should run behind an HTTPS reverse proxy such as [Caddy Proxy](https://github.com/bfren/docker-caddy-proxy).
 
