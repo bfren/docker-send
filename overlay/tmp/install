@@ -51,6 +51,7 @@ def main [] {
     cp -r $"($send)/dist" .
     cp -r $"($send)/public/locales" ./public
     cp -r $"($send)/server" .
+    cp /tmp/start.js ./server/bin/start.js
     ^ln -s dist/version.json version.json
 
     # set ownership

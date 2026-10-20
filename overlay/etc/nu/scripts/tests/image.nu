@@ -17,8 +17,18 @@ export def install__send_version_matches_build [] {
 
 export def install__server_is_installed [] {
     assert ($"($src)/server/bin/prod.js" | path exists)
+    assert ($"($src)/server/bin/start.js" | path exists) "start.js should be copied next to prod.js"
     assert ($"($src)/version.json" | path exists) "version.json should link to dist/version.json"
     assert ($"($src)/node_modules" | path exists) "production dependencies should be installed"
+}
+
+export def install__express_ws_does_not_need_esm [] {
+    # the 'esm' package fails on newer versions of Node.js, so express-ws is converted to CommonJS during the build
+    let dir = $"($src)/node_modules/@dannycoates/express-ws"
+    assert not (open --raw $"($dir)/index.js" | str contains "esm") "express-ws should not load through esm"
+    for file in (glob $"($dir)/src/*.js") {
+        assert not (open --raw $file | lines | any {|x| $x =~ '^\s*(import|export)\b' }) $"($file) should be CommonJS"
+    }
 }
 
 export def install__source_is_read_only_and_owned_by_node [] {

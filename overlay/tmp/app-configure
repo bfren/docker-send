@@ -5,5 +5,9 @@
 # Configure app.
 #======================================================================================================================
 
+# stop at the first failure, so a failed install or conversion fails the build
+set -e
+
 npm ci --omit=dev
+node /tmp/esm-to-cjs.js
 npm cache clean --force
