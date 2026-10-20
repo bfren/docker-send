@@ -1,46 +1,47 @@
-version: "3.8"
-
 services:
   proxy:
-    image: bfren/nginx-proxy:5
+    image: bfren/caddy-proxy:1
     container_name: proxy
     restart: unless-stopped
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
     environment:
-      - PROXY_URI=${PROXY_URI}
-      - PROXY_LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
-      - PROXY_LETS_ENCRYPT_LIVE=1
-      - PROXY_AUTO_PRIMARY=${SEND_URI}
-      - PROXY_AUTO_UPSTREAM=http://send:3000
+      - BF_PROXY_DOMAIN=${PROXY_DOMAIN}
+      - BF_PROXY_LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
+      - BF_PROXY_LETS_ENCRYPT_LIVE=1
+      - BF_PROXY_AUTO_PRIMARY=${SEND_DOMAIN}
+      - BF_PROXY_AUTO_UPSTREAM=http://send:3000
     volumes:
-      - ./v/sites:/sites
       - ./v/ssl:/ssl
+      - ./v/sites:/sites
     networks:
       - proxy
+
   send:
-    image: bfren/send
+    image: bfren/send:3
     container_name: send
     restart: unless-stopped
     environment:
-      - SEND_BASE_URI=https://${SEND_URI}
+      - BF_SEND_URI=https://${SEND_DOMAIN}
+      - BF_SEND_REDIS_HOST=redis
     volumes:
       - ./v/uploads:/uploads
     networks:
       - proxy
       - send
+
   redis:
-    image: bfren/redis:redis7
+    image: bfren/redis:redis8
     container_name: redis
     restart: unless-stopped
+    volumes:
+      - ./v/redis:/data
     networks:
       - send
 
 networks:
   send:
-    driver: bridge
     name: send
   proxy:
-    driver: bridge
     name: proxy
