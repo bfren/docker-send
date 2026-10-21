@@ -5,6 +5,10 @@
 # Build app.
 #======================================================================================================================
 
+# stop at the first failure, so a failed install fails the build with its own error
+set -e
+
 PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci
-npm audit fix
+# audit fix exits non-zero when vulnerabilities remain that it cannot fix - that should not stop the build
+npm audit fix || echo "npm audit fix could not fix every vulnerability."
 npm run build
