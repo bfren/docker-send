@@ -7,58 +7,67 @@ on:
   workflow_dispatch:
 
 env:
+  IMAGES: bfren/send quay.io/bfren/send
   TEST_TAG: send:test
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.tags.outputs.version }}
+      tags: ${{ steps.tags.outputs.tags }}
     steps:
       -
         name: Checkout code
         uses: actions/checkout@v7
       -
-        name: Get repository name
-        run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+        name: Read versions and build tag list
+        id: tags
         shell: bash
+        run: |
+          read_file() { tr -d '[:space:]' < "$1"; }
+          version=$(read_file VERSION)
+          major=$(read_file VERSION_MAJOR)
+          minor=$(read_file VERSION_MINOR)
+          send_major=$(read_file overlay/tmp/SEND_MAJOR)
+          send_minor=$(read_file overlay/tmp/SEND_MINOR)
+          send_revision=$(read_file overlay/tmp/SEND_REVISION)
+          tags=(
+            dev
+            ${major}-dev
+            ${minor}-dev
+            ${version}-dev
+            send${send_major}-dev
+            send${send_major}-${version}-dev
+            send${send_minor}-dev
+            send${send_minor}-${version}-dev
+            send${send_revision}-dev
+          )
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          echo "tags=${tags[*]}" >> $GITHUB_OUTPUT
+
+  build:
+    needs: prepare
+    strategy:
+      matrix:
+        include:
+          -
+            platform: linux/amd64
+            runner: ubuntu-24.04
+          -
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
       -
-        name: Read image version
-        uses: bfren/read-file@v2
-        with:
-          file: ./VERSION
-        id: version
+        name: Checkout code
+        uses: actions/checkout@v7
       -
-        name: Read Send version - major
-        uses: bfren/read-file@v2
-        with:
-          file: ./overlay/tmp/SEND_MAJOR
-        id: send_major
-      -
-        name: Read Send version - minor
-        uses: bfren/read-file@v2
-        with:
-          file: ./overlay/tmp/SEND_MINOR
-        id: send_minor
-      -
-        name: Read Send version - revision
-        uses: bfren/read-file@v2
-        with:
-          file: ./overlay/tmp/SEND_REVISION
-        id: send_revision
-      -
-        name: Read image version
-        uses: bfren/read-file@v2
-        with:
-          file: ./VERSION_MAJOR
-        id: version_major
-      -
-        name: Read image version
-        uses: bfren/read-file@v2
-        with:
-          file: ./VERSION_MINOR
-        id: version_minor
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        name: Get platform name
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+        shell: bash
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -77,48 +86,80 @@ jobs:
           password: ${{ secrets.QUAY_TOKEN }}
       -
         name: Build and export
-        id: docker_export
         uses: docker/build-push-action@v7
         with:
           build-args: |
-            BF_IMAGE=${{ env.REPOSITORY_NAME }}
-            BF_VERSION=${{ steps.version.outputs.contents }}
+            BF_IMAGE=${{ github.event.repository.name }}
+            BF_VERSION=${{ needs.prepare.outputs.version }}
           load: true
+          platforms: ${{ matrix.platform }}
           tags: ${{ env.TEST_TAG }}
       -
         name: Run tests
-        id: docker_test
-        run: |
-          docker run --entrypoint /test ${{ env.TEST_TAG }}
+        run: docker run --rm --entrypoint /test ${{ env.TEST_TAG }}
       -
-        name: Build and push
+        name: Build and push by digest
         id: docker_build
         uses: docker/build-push-action@v7
         with:
           build-args: |
-            BF_IMAGE=${{ env.REPOSITORY_NAME }}
-            BF_VERSION=${{ steps.version.outputs.contents }}
-          push: ${{ startsWith(github.ref, 'refs/heads/') }}
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            bfren/send:dev
-            bfren/send:${{ steps.version_major.outputs.contents }}-dev
-            bfren/send:${{ steps.version_minor.outputs.contents }}-dev
-            bfren/send:${{ steps.version.outputs.contents }}-dev
-            bfren/send:send${{ steps.send_major.outputs.contents }}-dev
-            bfren/send:send${{ steps.send_major.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
-            bfren/send:send${{ steps.send_minor.outputs.contents }}-dev
-            bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
-            bfren/send:send${{ steps.send_revision.outputs.contents }}-dev
-            quay.io/bfren/send:dev
-            quay.io/bfren/send:${{ steps.version_major.outputs.contents }}-dev
-            quay.io/bfren/send:${{ steps.version_minor.outputs.contents }}-dev
-            quay.io/bfren/send:${{ steps.version.outputs.contents }}-dev
-            quay.io/bfren/send:send${{ steps.send_major.outputs.contents }}-dev
-            quay.io/bfren/send:send${{ steps.send_major.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
-            quay.io/bfren/send:send${{ steps.send_minor.outputs.contents }}-dev
-            quay.io/bfren/send:send${{ steps.send_minor.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
-            quay.io/bfren/send:send${{ steps.send_revision.outputs.contents }}-dev
+            BF_IMAGE=${{ github.event.repository.name }}
+            BF_VERSION=${{ needs.prepare.outputs.version }}
+          platforms: ${{ matrix.platform }}
+          outputs: type=image,"name=bfren/send,quay.io/bfren/send",push-by-digest=true,name-canonical=true,push=true
       -
-        name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.docker_build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+      -
+        name: Upload digest
+        uses: actions/upload-artifact@v7
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Download digests
+        uses: actions/download-artifact@v8
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Login to Quay.io Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: quay.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.QUAY_TOKEN }}
+      -
+        name: Create multi-platform images and push
+        working-directory: ${{ runner.temp }}/digests
+        env:
+          TAGS: ${{ needs.prepare.outputs.tags }}
+        run: |
+          for image in ${IMAGES}; do
+            tag_args=$(printf -- "-t ${image}:%s " ${TAGS})
+            docker buildx imagetools create ${tag_args} $(printf "${image}@sha256:%s " *)
+          done
+        shell: bash
+      -
+        name: Inspect image
+        run: docker buildx imagetools inspect bfren/send:${{ needs.prepare.outputs.version }}-dev

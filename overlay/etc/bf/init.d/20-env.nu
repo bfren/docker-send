@@ -3,8 +3,8 @@ bf env load
 
 # Set environment variables
 def main [] {
-    # use src directory as run file
-    bf env set NODE_RUN $"(bf env ETC_SRC)/send/server/bin/prod.js"
+    # start Send through start.js, which restores util functions removed in Node.js 23 before loading the server
+    bf env set NODE_RUN $"(bf env ETC_SRC)/send/server/bin/start.js"
 
     # return nothing
     return
