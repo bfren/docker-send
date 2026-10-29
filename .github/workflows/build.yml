@@ -16,7 +16,6 @@ jobs:
       platforms: |
         linux/amd64
         linux/arm64
-      publish: ${{ github.event_name == 'release' }}
       tags: |
         latest
         ${VERSION_MAJOR}
