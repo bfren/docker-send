@@ -19,7 +19,7 @@ Send needs [Redis](https://github.com/bfren/docker-redis) to store details of up
 ```yaml
 services:
   proxy:
-    image: quay.io/bfren/caddy-proxy:1.0
+    image: quay.io/bfren/caddy-proxy:1
     restart: unless-stopped
     ports:
       - "0.0.0.0:80:80"
@@ -34,7 +34,7 @@ services:
       - ./v/sites:/sites
 
   send:
-    image: quay.io/bfren/send:3.0
+    image: quay.io/bfren/send:3
     restart: unless-stopped
     environment:
       - BF_SEND_URI=https://send.example.com
