@@ -1,6 +1,6 @@
 # Send
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-send) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Fsend) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Fsend) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bfren/docker-send/dev.yml?branch=main)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-send) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Fsend) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Fsend) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bfren/docker-send/build.yml?branch=main)
 
 [Docker Hub](https://hub.docker.com/r/bfren/send) - [Quay.io](https://quay.io/repository/bfren/send) - [bfren ecosystem](https://github.com/bfren/docker)
 
@@ -19,7 +19,7 @@ Send needs [Redis](https://github.com/bfren/docker-redis) to store details of up
 ```yaml
 services:
   proxy:
-    image: quay.io/bfren/caddy-proxy:1.0
+    image: quay.io/bfren/caddy-proxy:1
     restart: unless-stopped
     ports:
       - "0.0.0.0:80:80"
@@ -34,7 +34,7 @@ services:
       - ./v/sites:/sites
 
   send:
-    image: quay.io/bfren/send:3.0
+    image: quay.io/bfren/send:3
     restart: unless-stopped
     environment:
       - BF_SEND_URI=https://send.example.com
@@ -67,11 +67,11 @@ Images are published to Docker Hub (`bfren/send`) and Quay.io (`quay.io/bfren/se
 | `MAJOR`            | `3`            | You want updates, but not breaking changes |
 | `MINOR`            | `3.0`          | You want fixes only - **recommended**      |
 | `VERSION`          | `3.0.16`       | You want to pin this image exactly         |
-| `sendX`, `sendX.Y` | `send3.4`      | You want a Send version                    |
-| `sendX.Y.Z`        | `send3.4.27`   | You want an exact Send release             |
+| `sendX`, `sendX.Y` | `send3.5`      | You want a Send version                    |
+| `sendX.Y.Z`        | `send3.5.0`    | You want an exact Send release             |
 | `sendX-VERSION`    | `send3-3.0.16` | You want to pin both                       |
 
-This version of the image includes Send 3.4.27.
+This version of the image includes Send 3.5.0, on Node.js 26.
 
 ## Configuration
 
