@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Breaking:** base image updated to `bfren/node` 6.0.0 - see the
   [Node.js changelog](https://github.com/bfren/docker-node/blob/main/CHANGELOG.md).
   `bf env set` must now run as root.
+- Send updated to 3.5.0.
+- Built on Node.js 26 instead of Node.js 24.
 - Images are built and published by the shared `bfren/docker` build workflow (`build.yml`), replacing the separate
   `dev.yml` and `publish.yml` workflows.
 
