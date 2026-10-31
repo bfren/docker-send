@@ -34,7 +34,7 @@ services:
       - ./v/sites:/sites
 
   send:
-    image: quay.io/bfren/send:3.0
+    image: quay.io/bfren/send:4.0
     restart: unless-stopped
     environment:
       - BF_SEND_URI=https://send.example.com
@@ -61,15 +61,15 @@ Run `docker compose up -d` and open `https://send.example.com`. Caddy Proxy pass
 
 Images are published to Docker Hub (`bfren/send`) and Quay.io (`quay.io/bfren/send`) for `linux/amd64` and `linux/arm64`.
 
-| Tag                | Example        | Use when                                   |
-| ------------------ | -------------- | ------------------------------------------ |
-| `latest`           |                | You always want the newest image           |
-| `MAJOR`            | `3`            | You want updates, but not breaking changes |
-| `MINOR`            | `3.0`          | You want fixes only - **recommended**      |
-| `VERSION`          | `3.0.16`       | You want to pin this image exactly         |
-| `sendX`, `sendX.Y` | `send3.4`      | You want a Send version                    |
-| `sendX.Y.Z`        | `send3.4.27`   | You want an exact Send release             |
-| `sendX-VERSION`    | `send3-3.0.16` | You want to pin both                       |
+| Tag                | Example       | Use when                                   |
+| ------------------ | ------------- | ------------------------------------------ |
+| `latest`           |               | You always want the newest image           |
+| `MAJOR`            | `4`           | You want updates, but not breaking changes |
+| `MINOR`            | `4.0`         | You want fixes only - **recommended**      |
+| `VERSION`          | `4.0.0`       | You want to pin this image exactly         |
+| `sendX`, `sendX.Y` | `send3.4`     | You want a Send version                    |
+| `sendX.Y.Z`        | `send3.4.27`  | You want an exact Send release             |
+| `sendX-VERSION`    | `send3-4.0.0` | You want to pin both                       |
 
 This version of the image includes Send 3.4.27.
 
