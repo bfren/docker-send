@@ -26,13 +26,10 @@ export def install__routes_do_not_log_base_url [] {
     assert not (open --raw $"($src)/server/routes/index.js" | str contains "console.log([baseUrl") "the base URL should not be logged on every request"
 }
 
-export def install__express_ws_does_not_need_esm [] {
-    # the 'esm' package fails on newer versions of Node.js, so express-ws is converted to CommonJS during the build
-    let dir = $"($src)/node_modules/@dannycoates/express-ws"
-    assert not (open --raw $"($dir)/index.js" | str contains "esm") "express-ws should not load through esm"
-    for file in (glob $"($dir)/src/*.js") {
-        assert not (open --raw $file | lines | any {|x| $x =~ '^\s*(import|export)\b' }) $"($file) should be CommonJS"
-    }
+export def install__uses_upstream_express_ws [] {
+    # Send 3.5 replaced @dannycoates/express-ws, which loaded through the 'esm' package and failed on newer Node.js
+    assert ($"($src)/node_modules/express-ws" | path exists) "express-ws should be installed"
+    assert not ($"($src)/node_modules/@dannycoates/express-ws" | path exists) "@dannycoates/express-ws should no longer be installed"
 }
 
 export def install__source_is_read_only_and_owned_by_node [] {
