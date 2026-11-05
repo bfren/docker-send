@@ -1,6 +1,6 @@
 services:
   proxy:
-    image: bfren/caddy-proxy:1
+    image: bfren/caddy-proxy:2
     container_name: proxy
     restart: unless-stopped
     ports:
@@ -19,7 +19,7 @@ services:
       - proxy
 
   send:
-    image: bfren/send:3
+    image: bfren/send:4
     container_name: send
     restart: unless-stopped
     environment:

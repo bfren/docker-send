@@ -1,6 +1,6 @@
 # Send
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-send) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Fsend) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Fsend) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bfren/docker-send/dev.yml?branch=main)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-send) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Fsend) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Fsend) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bfren/docker-send/build.yml?branch=main)
 
 [Docker Hub](https://hub.docker.com/r/bfren/send) - [Quay.io](https://quay.io/repository/bfren/send) - [bfren ecosystem](https://github.com/bfren/docker)
 
@@ -8,7 +8,7 @@
 
 [Send](https://github.com/timvisee/send) lets you share files with end-to-end encryption and a link that expires - a community fork of Mozilla's discontinued Firefox Send.
 
-It is built on [Node.js](https://github.com/bfren/docker-node) (version 24), with Send built from source when the image is built. Configure it with `BF_SEND_*` variables using friendly values such as `1wk` and `2gb`, and expired uploads are deleted from disk every hour.
+It is built on [Node.js](https://github.com/bfren/docker-node) (version 26), with Send built from source when the image is built. Configure it with `BF_SEND_*` variables using friendly values such as `1wk` and `2gb`, and expired uploads are deleted from disk every hour.
 
 Send needs [Redis](https://github.com/bfren/docker-redis) to store details of uploads, and should run behind an HTTPS reverse proxy such as [Caddy Proxy](https://github.com/bfren/docker-caddy-proxy).
 
@@ -19,7 +19,7 @@ Send needs [Redis](https://github.com/bfren/docker-redis) to store details of up
 ```yaml
 services:
   proxy:
-    image: quay.io/bfren/caddy-proxy:1.0
+    image: quay.io/bfren/caddy-proxy:2
     restart: unless-stopped
     ports:
       - "0.0.0.0:80:80"
@@ -34,7 +34,7 @@ services:
       - ./v/sites:/sites
 
   send:
-    image: quay.io/bfren/send:3.0
+    image: quay.io/bfren/send:4
     restart: unless-stopped
     environment:
       - BF_SEND_URI=https://send.example.com
@@ -61,17 +61,17 @@ Run `docker compose up -d` and open `https://send.example.com`. Caddy Proxy pass
 
 Images are published to Docker Hub (`bfren/send`) and Quay.io (`quay.io/bfren/send`) for `linux/amd64` and `linux/arm64`.
 
-| Tag                | Example        | Use when                                   |
-| ------------------ | -------------- | ------------------------------------------ |
-| `latest`           |                | You always want the newest image           |
-| `MAJOR`            | `3`            | You want updates, but not breaking changes |
-| `MINOR`            | `3.0`          | You want fixes only - **recommended**      |
-| `VERSION`          | `3.0.16`       | You want to pin this image exactly         |
-| `sendX`, `sendX.Y` | `send3.4`      | You want a Send version                    |
-| `sendX.Y.Z`        | `send3.4.27`   | You want an exact Send release             |
-| `sendX-VERSION`    | `send3-3.0.16` | You want to pin both                       |
+| Tag                | Example       | Use when                                   |
+| ------------------ | ------------- | ------------------------------------------ |
+| `latest`           |               | You always want the newest image           |
+| `MAJOR`            | `4`           | You want updates, but not breaking changes |
+| `MINOR`            | `4.0`         | You want fixes only - **recommended**      |
+| `VERSION`          | `4.0.0`       | You want to pin this image exactly         |
+| `sendX`, `sendX.Y` | `send3.5`     | You want a Send version                    |
+| `sendX.Y.Z`        | `send3.5.0`   | You want an exact Send release             |
+| `sendX-VERSION`    | `send3-4.0.0` | You want to pin both                       |
 
-This version of the image includes Send 3.4.27.
+This version of the image includes Send 3.5.0, on Node.js 26.
 
 ## Configuration
 
