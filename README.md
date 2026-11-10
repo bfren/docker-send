@@ -66,10 +66,10 @@ Images are published to Docker Hub (`bfren/send`) and Quay.io (`quay.io/bfren/se
 | `latest`           |               | You always want the newest image           |
 | `MAJOR`            | `4`           | You want updates, but not breaking changes |
 | `MINOR`            | `4.0`         | You want fixes only - **recommended**      |
-| `VERSION`          | `4.0.1`       | You want to pin this image exactly         |
+| `VERSION`          | `4.0.2`       | You want to pin this image exactly         |
 | `sendX`, `sendX.Y` | `send3.5`     | You want a Send version                    |
 | `sendX.Y.Z`        | `send3.5.0`   | You want an exact Send release             |
-| `sendX-VERSION`    | `send3-4.0.1` | You want to pin both                       |
+| `sendX-VERSION`    | `send3-4.0.2` | You want to pin both                       |
 
 This version of the image includes Send 3.5.0, on Node.js 26.
 
