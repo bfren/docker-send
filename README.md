@@ -25,9 +25,9 @@ services:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
     environment:
-      - BF_PROXY_DOMAIN=proxy.example.com
-      - BF_PROXY_LETS_ENCRYPT_EMAIL=you@example.com
-      - BF_PROXY_AUTO_PRIMARY=send.example.com
+      - BF_PROXY_DOMAIN=${PROXY_DOMAIN}
+      - BF_PROXY_LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
+      - BF_PROXY_AUTO_PRIMARY=${SEND_DOMAIN}
       - BF_PROXY_AUTO_UPSTREAM=http://send:3000
     volumes:
       - ./v/ssl:/ssl
@@ -37,7 +37,7 @@ services:
     image: quay.io/bfren/send:4
     restart: unless-stopped
     environment:
-      - BF_SEND_URI=https://send.example.com
+      - BF_SEND_URI=https://${SEND_DOMAIN}
       - BF_SEND_REDIS_HOST=redis
     volumes:
       - ./v/uploads:/uploads
@@ -45,9 +45,25 @@ services:
   redis:
     image: quay.io/bfren/redis:redis8
     restart: unless-stopped
+    volumes:
+      - ./v/redis:/data
 ```
 
-Run `docker compose up -d` and open `https://send.example.com`. Caddy Proxy passes on the WebSocket connections Send uses for uploads automatically - with another proxy, make sure WebSockets are allowed.
+`.env` - copy [`.env.sample`](.env.sample) and change the values. The proxy and Send both need the Send domain, so it is set once here:
+
+```sh
+PROXY_DOMAIN=proxy.example.com
+LETS_ENCRYPT_EMAIL=me@example.com
+SEND_DOMAIN=send.example.com
+```
+
+1. Point the DNS records for `PROXY_DOMAIN` and `SEND_DOMAIN` at your server.
+2. Run `docker compose up -d`, then open `https://<SEND_DOMAIN>`.
+3. Once it works, add `- BF_PROXY_LETS_ENCRYPT_LIVE=1` to the proxy's `environment` and run `docker compose up -d` again.
+
+Until step 3, the proxy uses Let's Encrypt's staging certificates, so your browser warns that the site isn't trusted - see [Caddy Proxy](https://github.com/bfren/docker-caddy-proxy#quickstart) for why.
+
+Redis keeps the details of every upload, so its `/data` volume is needed for uploads to survive a restart. Send uploads files over WebSockets - Caddy Proxy passes them on automatically, but with another proxy make sure WebSockets are allowed.
 
 ## Features
 
@@ -66,10 +82,10 @@ Images are published to Docker Hub (`bfren/send`) and Quay.io (`quay.io/bfren/se
 | `latest`           |               | You always want the newest image           |
 | `MAJOR`            | `4`           | You want updates, but not breaking changes |
 | `MINOR`            | `4.0`         | You want fixes only - **recommended**      |
-| `VERSION`          | `4.0.3`       | You want to pin this image exactly         |
+| `VERSION`          | `4.0.4`       | You want to pin this image exactly         |
 | `sendX`, `sendX.Y` | `send3.5`     | You want a Send version                    |
 | `sendX.Y.Z`        | `send3.5.1`   | You want an exact Send release             |
-| `sendX-VERSION`    | `send3-4.0.3` | You want to pin both                       |
+| `sendX-VERSION`    | `send3-4.0.4` | You want to pin both                       |
 
 This version of the image includes Send 3.5.1, on Node.js 26.
 
