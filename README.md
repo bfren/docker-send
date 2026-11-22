@@ -89,6 +89,8 @@ Images are published to Docker Hub (`bfren/send`) and Quay.io (`quay.io/bfren/se
 | `sendX.Y.Z`        | `send3.5.1`   | You want an exact Send release             |
 | `sendX-VERSION`    | `send3-4.0.4` | You want to pin both                       |
 
+A new `MAJOR` version means a breaking change. Before moving to one, read the [changelog](CHANGELOG.md), where each breaking change is marked **Breaking**.
+
 This version of the image includes Send 3.5.1, on Node.js 26.
 
 ## Configuration
