@@ -49,6 +49,8 @@ services:
       - ./v/redis:/data
 ```
 
+This example is also in [`docker-compose.yml`](docker-compose.yml).
+
 `.env` - copy [`.env.sample`](.env.sample) and change the values. The proxy and Send both need the Send domain, so it is set once here:
 
 ```sh

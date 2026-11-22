@@ -1,7 +1,6 @@
 services:
   proxy:
-    image: bfren/caddy-proxy:2
-    container_name: proxy
+    image: quay.io/bfren/caddy-proxy:2
     restart: unless-stopped
     ports:
       - "0.0.0.0:80:80"
@@ -9,39 +8,23 @@ services:
     environment:
       - BF_PROXY_DOMAIN=${PROXY_DOMAIN}
       - BF_PROXY_LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
-      - BF_PROXY_LETS_ENCRYPT_LIVE=1
       - BF_PROXY_AUTO_PRIMARY=${SEND_DOMAIN}
       - BF_PROXY_AUTO_UPSTREAM=http://send:3000
     volumes:
       - ./v/ssl:/ssl
       - ./v/sites:/sites
-    networks:
-      - proxy
 
   send:
-    image: bfren/send:4
-    container_name: send
+    image: quay.io/bfren/send:4
     restart: unless-stopped
     environment:
       - BF_SEND_URI=https://${SEND_DOMAIN}
       - BF_SEND_REDIS_HOST=redis
     volumes:
       - ./v/uploads:/uploads
-    networks:
-      - proxy
-      - send
 
   redis:
-    image: bfren/redis:redis8
-    container_name: redis
+    image: quay.io/bfren/redis:redis8
     restart: unless-stopped
     volumes:
       - ./v/redis:/data
-    networks:
-      - send
-
-networks:
-  send:
-    name: send
-  proxy:
-    name: proxy

@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - README: the Quickstart is now numbered steps. It says the proxy starts with Let's Encrypt staging certificates, and
   adds the Redis volume that uploads need to survive a restart.
+- `docker-compose.yml` now matches the README Quickstart, which starts on Let's Encrypt's staging server. The README now
+  uses `.env.sample` too, so the Send domain is set in one place.
 
 ## [4.0.3] - 2026-11-20
 
