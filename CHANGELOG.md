@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.0.4] - Unreleased
+## [4.0.4] - 2026-11-25
+
+### Changed
+
+- Base image updated to `bfren/node` 6.0.3, which updates Node.js 26 to 26.13.1 and moves to `bfren/alpine-s6`
+  7.0.3 - see the [Node.js changelog](https://github.com/bfren/docker-node/blob/main/CHANGELOG.md).
 
 ### Fixed
 
